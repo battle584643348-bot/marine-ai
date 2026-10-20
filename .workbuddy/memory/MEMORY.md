@@ -39,5 +39,25 @@
 3. diagram_annotate.DEFAULT_SCHEDULE 硬编码桌面绝对路径。
 4. 会话历史为内存 dict，重启即丢，无多会话管理。
 5. 前端用 innerHTML 渲染模型输出 → 存在 XSS 面。
-6. 无 .git、无测试、无日志规范。
+6. 无测试、无日志规范（git 已于 2026-10-20 建立，见下）。
 7. 根目录 README.md 已过期，以 README.txt 为准。
+
+## 版本控制约定（2026-10-20 建立）
+- 本机 Git：`D:\JAVA\Git`（2.51.0.2，winget 装的 Git.Git，已在机器级 PATH）。
+  注意：WorkBuddy 会话内的 bash 用的是自带 PortableGit 2.55.0，二者读同一份
+  `C:\Users\zhang\.gitconfig`，对象格式兼容，不冲突。
+- 全局配置已写：init.defaultBranch=main、core.quotepath=false（中文名显示）、
+  core.autocrlf=false（交给 .gitattributes）、core.longpaths=true（Windows 260 限制）、
+  core.editor=code --wait、pull.rebase=false、push.default=simple、fetch.prune=true、
+  credential.helper=manager。
+- 别名：st / lg / last / unstage / undo。
+- 提交历史：6cf405d（基线）→ 0a63ead。
+- **远端已配置（2026-10-20 完成）**：
+  `origin = git@github.com:battle584643348-bot/marine-ai.git`，私有仓库，
+  认证走 SSH（`~/.ssh/id_rsa`，公钥已加到该 GitHub 账号）。
+  GitHub 用户名 = `battle584643348-bot`（2026-10-14 注册）。
+  main 已 `push -u` 建立上游跟踪；基线提交 `0a63ead` 已验证远端 hash 一致。
+  注意：`objects.githubusercontent.com` 在该网络下不通，故 **gh CLI 装不上、Release
+  下载会挂**；SSH 与 git push 不受影响。以后要装 gh 需换网络环境。
+- 约定：新功能开 `feature/xxx` 分支；提交信息用「类型: 中文说明」
+  （chore/docs/feat/fix/refactor）。
