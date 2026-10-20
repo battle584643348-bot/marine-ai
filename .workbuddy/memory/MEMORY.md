@@ -35,7 +35,8 @@
 ## 已确认的工程缺口（教学时可作为案例）
 1. /api/files/{filename} 不支持子路径 → generated/diagram_mark 产物无法下载；
    前端 app.js tool_end 未渲染 meta.path，file 类技能结果等于"看得见摸不着"。
-2. requirements.txt 缺 rapidocr_onnxruntime（diagram_annotate sld 模式依赖）。
+2. ~~requirements.txt 缺 rapidocr_onnxruntime~~ —— 已于 2026-10-20 修复（`df52b41`），
+   以可选依赖形式加入，b/c 见上方版本控制约定。
 3. diagram_annotate.DEFAULT_SCHEDULE 硬编码桌面绝对路径。
 4. 会话历史为内存 dict，重启即丢，无多会话管理。
 5. 前端用 innerHTML 渲染模型输出 → 存在 XSS 面。
