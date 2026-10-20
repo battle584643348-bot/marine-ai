@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海工智舱 · 代码编辑导览</title>
+<style>
+  :root { --accent:#8BC8EA; --accent-deep:#2E6E9E; --text:#1A1B1C; --text-2:#6B7280; --bg:#F4F3EE; --card:#FFFFFF; --border:#E4E3DD; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Roboto','PingFang SC','Segoe UI','Microsoft YaHei',Arial,sans-serif; background:var(--bg); color:var(--text); padding:24px 16px 40px; line-height:1.55; }
+  .wrap { max-width:980px; margin:0 auto; }
+  h1 { font-size:21px; margin-bottom:4px; }
+  .sub { color:var(--text-2); font-size:12.5px; margin-bottom:18px; }
+  .layer { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px 16px; margin-bottom:14px; }
+  .layer-head { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .badge { font-size:11px; font-weight:700; color:#fff; border-radius:6px; padding:2px 10px; }
+  .b-front { background:#2E6E9E; } .b-back { background:#4C7A4C; } .b-data { background:#8A6D3B; }
+  .layer-head h3 { font-size:14px; }
+  .layer-head .hint { font-size:11px; color:var(--text-2); }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th { text-align:left; color:var(--text-2); font-weight:600; padding:5px 8px; border-bottom:1px solid var(--border); }
+  td { padding:5px 8px; border-bottom:1px solid rgba(228,227,221,.6); vertical-align:top; }
+  td code, .code { font-family:Consolas,'Courier New',monospace; background:rgba(139,200,234,.14); border-radius:4px; padding:0 4px; font-size:11px; color:#1A3A52; }
+  tr:last-child td { border-bottom:none; }
+  .flow { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .step { flex:1 1 150px; min-width:0; background:rgba(139,200,234,.10); border:1px solid rgba(139,200,234,.5); border-radius:10px; padding:8px 10px; font-size:11.5px; }
+  .step b { display:block; font-size:12px; margin-bottom:2px; }
+  .arrow { color:var(--accent-deep); font-weight:700; }
+  .note { font-size:11px; color:var(--text-2); margin-top:8px; }
+  @media (max-width:520px){ body{padding:16px 10px 32px;} h1{font-size:17px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>海工智舱 · 代码编辑导览</h1>
+  <div class="sub">项目根：marine-ai\（前端零构建 · 后端 FastAPI · 配置 JSON）</div>
+
+  <div class="layer">
+    <div class="layer-head"><span class="badge b-front">前端</span><h3>frontend\（浏览器里看到的界面）</h3><span class="hint">改完保存 → 刷新页面即生效，无需重启</span></div>
+    <table>
+      <tr><th>文件</th><th>管什么</th><th>常见修改</th></tr>
+      <tr><td><code>index.html</code></td><td>页面结构：侧边栏 / 对话区 / 欢迎页 / 导航</td><td>加按钮、改标题、调整布局骨架</td></tr>
+      <tr><td><code>css/style.css</code></td><td>全部样式：颜色、字号、间距、深浅主题</td><td>改 <code>--accent</code> 主色、字体、卡片样式</td></tr>
+      <tr><td><code>js/app.js</code></td><td>主逻辑：消息渲染、分支切换、视图导航</td><td>改欢迎语、分支切换行为、消息样式</td></tr>
+      <tr><td><code>js/api.js</code></td><td>所有后端请求封装（fetch/SSE）</td><td>后端接口变了就改这里</td></tr>
+      <tr><td><code>js/docs.js / skills.js / settings.js</code></td><td>知识库页 / 技能页 / 设置页逻辑</td><td>调整各页面交互</td></tr>
+      <tr><td><code>js/markdown.js</code></td><td>Markdown → HTML 渲染</td><td>一般不动</td></tr>
+    </table>
+  </div>
+
+  <div class="layer">
+    <div class="layer-head"><span class="badge b-back">后端</span><h3>backend\app\（API 与逻辑）</h3><span class="hint">改完保存 → 必须重启服务才生效</span></div>
+    <table>
+      <tr><th>文件</th><th>管什么</th><th>常见修改</th></tr>
+      <tr><td><code>main.py</code></td><td>FastAPI 入口：路由注册、静态托管、状态初始化</td><td>加新路由、改托管路径</td></tr>
+      <tr><td><code>api/chat.py</code></td><td>对话 SSE / 历史 / 分支列表接口</td><td>改对话参数、加接口</td></tr>
+      <tr><td><code>api/documents.py · skills.py · settings.py</code></td><td>知识库上传 / 技能启停 / 设置与健康</td><td>扩展对应功能</td></tr>
+      <tr><td><code>agent/loop.py</code></td><td>Agent 主循环：系统提示词、技能调用、会话隔离</td><td>改提示词、调用策略、轮数上限</td></tr>
+      <tr><td><code>skills/*.py</code>（6 个技能）</td><td>技能实现：标准速查 / 计算 / SOP / 翻译 / Excel / 检索</td><td>改技能逻辑、加新技能（复制一个类改）</td></tr>
+      <tr><td><code>skills/registry.py · base.py</code></td><td>技能注册表与基类（自动发现）</td><td>一般不动</td></tr>
+      <tr><td><code>rag/</code></td><td>文档解析、切块、索引、检索</td><td>改解析规则、检索参数</td></tr>
+      <tr><td><code>core/llm.py · config.py · embeddings.py</code></td><td>LLM 通道（Ollama/OpenAI/mock）、配置、向量化</td><td>接真实模型、调参</td></tr>
+    </table>
+  </div>
+
+  <div class="layer">
+    <div class="layer-head"><span class="badge b-data">数据与配置</span><h3>config.yaml + data\（不用写代码，改配置）</h3><span class="hint">改完重启服务生效（user_config.yaml 页面设置是动态加载）</span></div>
+    <table>
+      <tr><th>文件</th><th>管什么</th><th>常见修改</th></tr>
+      <tr><td><code>config.yaml</code></td><td>端口、模型提供方、RAG/Agent 参数</td><td>换端口、配 API Key</td></tr>
+      <tr><td><code>data/branches.json</code></td><td>8 个分支：名称 / 图标 / 技能集 / 专属提示词</td><td>加分支、调分支提示词与技能</td></tr>
+      <tr><td><code>data/standards.json</code></td><td>标准速查索引（IEC/IEEE/GB/ASME/API）</td><td>增删标准条目</td></tr>
+      <tr><td><code>data/index.json · uploads\</code></td><td>RAG 索引与上传文档</td><td>不要手改，用页面操作</td></tr>
+    </table>
+  </div>
+
+  <div class="layer">
+    <div class="layer-head"><span class="badge" style="background:#7A5A8E;">流程</span><h3>编辑 → 生效的标准流程</h3></div>
+    <div class="flow">
+      <div class="step"><b>1. 找到文件</b>改对应 .py / .js / .json，用 VS Code 等打开</div>
+      <div class="arrow">→</div>
+      <div class="step"><b>2. 保存</b>前端改完直接刷新浏览器（必要时 <code>?fresh=时间戳</code> 强制重载）</div>
+      <div class="arrow">→</div>
+      <div class="step"><b>3. 后端重启</b>结束占用 8000 端口的 python 进程 → <code>python run.py</code> 重新启动</div>
+      <div class="arrow">→</div>
+      <div class="step"><b>4. 验证</b>浏览器打开 http://127.0.0.1:8000 测试改动</div>
+    </div>
+    <div class="note">提示：重启后端用命令 <code>python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000</code>，或直接 <code>python run.py</code>（项目根目录下）。</div>
+  </div>
+</div>
+</body>
+</html>

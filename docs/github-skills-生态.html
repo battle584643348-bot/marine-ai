@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Agent Skills 生态导览 · 海工智舱对接</title>
+<style>
+  :root {
+    --accent: #8BC8EA; --accent-deep: #2E6E9E;
+    --text: #1A1B1C; --text-2: #6B7280;
+    --bg: #F4F3EE; --card: #FFFFFF; --border: #E4E3DD;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Roboto','PingFang SC','Segoe UI','Microsoft YaHei',Arial,sans-serif; background: var(--bg); color: var(--text); padding: 24px 16px 40px; line-height: 1.55; }
+  .wrap { max-width: 1000px; margin: 0 auto; }
+  h1 { font-size: 21px; margin-bottom: 4px; }
+  .sub { color: var(--text-2); font-size: 12.5px; margin-bottom: 18px; }
+  .band { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 13px 16px; margin-bottom: 12px; }
+  .band-title { font-size: 13px; font-weight: 700; color: var(--accent-deep); margin-bottom: 10px; letter-spacing: .5px; }
+  .grid { display: flex; gap: 10px; flex-wrap: wrap; }
+  .card { flex: 1 1 220px; min-width: 0; background: rgba(139,200,234,.10); border: 1px solid rgba(139,200,234,.5); border-radius: 10px; padding: 10px 12px; }
+  .card h4 { font-size: 13px; margin-bottom: 2px; }
+  .card .src { font-size: 11px; color: var(--text-2); margin-bottom: 5px; }
+  .card p { font-size: 12px; }
+  .arrow { text-align: center; color: var(--accent-deep); font-size: 15px; margin: 2px 0; }
+  .paths { display: flex; flex-direction: column; gap: 8px; }
+  .path { display: flex; gap: 10px; align-items: flex-start; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+  .path .tag { flex-shrink: 0; background: var(--accent); color: #1A3A52; font-weight: 700; font-size: 11px; border-radius: 6px; padding: 2px 8px; }
+  .path b { font-size: 12.5px; }
+  .path p { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+  .note { font-size: 11.5px; color: var(--text-2); margin-top: 12px; }
+  @media (max-width: 520px) { body { padding: 16px 10px 32px; } h1 { font-size: 17px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>GitHub Agent Skills 生态导览</h1>
+  <div class="sub">开放标准 SKILL.md · 已核实仓库（2026-10）· 面向海工智舱的接入路径</div>
+
+  <div class="band">
+    <div class="band-title">① 官方 / 一线大厂技能库</div>
+    <div class="grid">
+      <div class="card"><h4>anthropics/skills</h4><div class="src">Anthropic 官方 · GitHub 最热门技能库</div><p>文档/PDF/PPT/表格处理等生产级技能，SKILL.md 规范源头，质量标杆，可直接借鉴或移植。</p></div>
+      <div class="card"><h4>openai/skills</h4><div class="src">OpenAI 官方 · Codex 技能目录</div><p>含 skill-creator（教你写规范技能）、skill-installer 等系统技能，可作为编写范式参考。</p></div>
+      <div class="card"><h4>addyosmani/agent-skills</h4><div class="src">Google Chrome 团队工程主管 · ~90k★ · MIT</div><p>生产级工程技能包：流程纪律 + 质量门禁 + 验证；"适用于任何接受 Markdown 指令的 Agent"。</p></div>
+      <div class="card"><h4>github/awesome-copilot</h4><div class="src">GitHub 官方社区集合</div><p>GitHub Docs 官方推荐的社区技能集合入口。</p></div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <div class="band">
+    <div class="band-title">② 社区聚合生态</div>
+    <div class="grid">
+      <div class="card"><h4>shadowrootdev/awesome-agent-skills</h4><div class="src">100+ 精选 · MCP 服务器分发</div><p>聚合 Anthropic、Vercel、Trail of Bits、Hugging Face 等组织技能，MCP 客户端可直接消费。</p></div>
+      <div class="card"><h4>ningzimu/awesome-skills</h4><div class="src">社区 awesome 清单</div><p>按领域索引的开源技能清单（含媒体/编辑/自动化等方向）。</p></div>
+      <div class="card"><h4>browser-act/skills</h4><div class="src">网页研究类</div><p>网页研究与自动化技能，可补海工智舱缺失的联网检索能力。</p></div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <div class="band">
+    <div class="band-title">③ 对接海工智舱的 3 条路径</div>
+    <div class="paths">
+      <div class="path"><span class="tag">路径A</span><div><b>移植（今天就能做）</b><p>读 anthropics/skills 的 docx/pdf/xlsx 技能实现 → 转写成海工智舱的 Python Skill 类，直接增强现有 excel_report / 文档解析。</p></div></div>
+      <div class="path"><span class="tag">路径B</span><div><b>规范兼容（推荐 v2）</b><p>给技能注册表加 SKILL.md 加载器：直接读取 .claude/skills / .agents/skills 目录的技能包（本质=提示词+可选脚本），海工智舱即可消费整个 GitHub 技能生态。</p></div></div>
+      <div class="path"><span class="tag">路径C</span><div><b>借鉴规范提升质量</b><p>采用 addyosmani 的技能结构（When to Use / Common Rationalizations / Red Flags / Verification），给现有 6 个技能补质量章节。</p></div></div>
+    </div>
+  </div>
+
+  <div class="band">
+    <div class="band-title">④ 行业空白 → 你的机会</div>
+    <div class="card"><h4>海工 / 船舶 / 电气调试垂直技能库：GitHub 上暂无</h4><p>检索确认没有现成的海工调试垂直技能仓库。你已实现的标准速查、软起动/谐波计算、SOP 生成等技能按 SKILL.md 开放标准开源后，可填补空白并成为该领域参考实现。</p></div>
+  </div>
+
+  <div class="note">数据口径：仓库与信息来自 GitHub 官方文档与各仓库公开页面，2026-10 检索核实；star 数随时间变化，仅作参考。</div>
+</div>
+</body>
+</html>

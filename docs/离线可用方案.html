@@ -1,0 +1,79 @@
+<html style="margin:0;padding:0;">
+<div style="background-color:transparent;box-sizing:border-box;--accent:var(--m-02);padding:4px;font-family:'Roboto','PingFang SC','Segoe UI',Arial,sans-serif;color:#1A1B1C;">
+  <style>
+    .card{background:#fff;border:1px solid #E4E3DD;border-radius:12px;padding:14px 16px;box-sizing:border-box;margin:8px 0;}
+    .k{font-size:11px;color:#6B7280;letter-spacing:.5px;}
+    .lv{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;}
+    .lv-off{background:rgba(82,196,26,0.12);color:#2F8F46;border:1px solid rgba(82,196,26,0.45);}
+    .lv-llm{background:rgba(250,173,20,0.14);color:#B4690E;border:1px solid rgba(250,173,20,0.5);}
+    .lv-online{background:rgba(107,114,128,0.1);color:#4B5563;border:1px solid #D1D5DB;}
+    .pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:600;background:rgba(163,213,232,0.18);color:#17627E;border:1px solid rgba(163,213,232,0.55);margin:2px 3px 2px 0;}
+    .step{display:flex;gap:10px;margin-top:8px;align-items:flex-start;}
+    .snum{flex:0 0 24px;height:24px;border-radius:50%;background:#17627E;color:#fff;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+    .code{font-family:Consolas,monospace;background:#F4F3EE;border:1px solid #E4E3DD;border-radius:6px;padding:1px 6px;font-size:12px;color:#17627E;}
+    .table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px;}
+    .table th{background:rgba(163,213,232,0.16);text-align:left;padding:6px 8px;font-size:12px;border:1px solid #E4E3DD;}
+    .table td{padding:6px 8px;border:1px solid #E4E3DD;vertical-align:top;}
+  </style>
+
+  <div style="font-size:16px;font-weight:600;">海工智舱 · 离线可用性盘点与落地路径</div>
+  <div style="font-size:12px;color:#6B7280;margin-top:2px;">本机：RTX 5060 4GB + 16GB 内存 · Ollama 未装 · 当前 LLM provider = mock（离线占位）</div>
+
+  <div class="card">
+    <div class="k">技能离线能力分层</div>
+    <table class="table">
+      <tr><th style="width:38%;">技能</th><th style="width:20%;">层</th><th>说明</th></tr>
+      <tr>
+        <td><b>calc_engine</b> 工程计算</td><td><span class="lv lv-off">完全离线 ✓</span></td>
+        <td>确定性公式计算，零网络零模型</td>
+      </tr>
+      <tr>
+        <td><b>diagram_annotate</b> 单线图标注</td><td><span class="lv lv-off">完全离线 ✓</span></td>
+        <td>pymupdf/openpyxl 本地处理 PDF/Excel</td>
+      </tr>
+      <tr>
+        <td><b>excel_report</b> Excel 报告</td><td><span class="lv lv-off">完全离线 ✓</span></td>
+        <td>本地生成工作簿</td>
+      </tr>
+      <tr>
+        <td><b>knowledge_search</b> 知识检索</td><td><span class="lv lv-off">完全离线 ✓</span></td>
+        <td>内置 TF-IDF 关键词检索（无需 embedding 模型）</td>
+      </tr>
+      <tr>
+        <td><b>standard_lookup</b> 标准速查</td><td><span class="lv lv-off">完全离线 ✓</span></td>
+        <td>本地标准库速查</td>
+      </tr>
+      <tr>
+        <td><b>translate</b> 中英翻译</td><td><span class="lv lv-llm">需本地模型 ⚠</span></td>
+        <td>走 LLM —— 当前 mock 为占位，装 Ollama 后离线可用</td>
+      </tr>
+      <tr>
+        <td><b>sop_generator</b> 调试程序</td><td><span class="lv lv-llm">需本地模型 ⚠</span></td>
+        <td>走 LLM —— 同上</td>
+      </tr>
+      <tr>
+        <td><b>对话问答</b>（全部 8 分支）</td><td><span class="lv lv-llm">需本地模型 ⚠</span></td>
+        <td>Agent 循环 + 技能调度，模型决定对话质量</td>
+      </tr>
+    </table>
+    <div style="font-size:12px;color:#6B7280;margin-top:6px;">另有可选云端：<span class="lv lv-online">openai 兼容（DeepSeek 等，需联网+key）</span>——不装本地模型时也可在线用，但不满足"离线"要求。</div>
+  </div>
+
+  <div class="card">
+    <div class="k">离线能力现状（无网络时）</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+      <div class="lv lv-off">5 个技能完全可用</div>
+      <div class="lv lv-llm">3 个技能 + 对话 = mock 占位</div>
+    </div>
+    <div style="font-size:12.5px;color:#374151;margin-top:6px;">系统自带 <span class="code">provider: auto</span> —— 启动时自动探测本地 Ollama，检测到即切换离线推理，无需改代码。</div>
+  </div>
+
+  <div class="card">
+    <div class="k">三步落地：让全部技能离线可用</div>
+    <div class="step"><div class="snum">1</div><div style="flex:1;font-size:12.5px;line-height:1.7;">安装 Ollama（本地推理服务）<br><span class="code">winget install Ollama.Ollama</span> 或官网 ollama.com 下载 ~700MB</div></div>
+    <div class="step"><div class="snum">2</div><div style="flex:1;font-size:12.5px;line-height:1.7;">拉取中文对话模型（按本机 16GB 内存 + 4GB 显存）<br><span class="code">ollama pull qwen2.5:7b</span>（约 4.7GB，质量/速度平衡，推荐）<br>或 <span class="code">ollama pull qwen2.5:3b</span>（约 2GB，更快更省）<br>可选语义检索：<span class="code">ollama pull bge-m3</span></div></div>
+    <div class="step"><div class="snum">3</div><div style="flex:1;font-size:12.5px;line-height:1.7;">配置并重启：<br>① 前端「设置」页选 Ollama 并填模型名；或<br>② 直接改 <span class="code">config.yaml → llm.provider: ollama</span><br>③ 重启服务 → 状态显示 <span class="code">Ollama 可达；模型 qwen2.5:7b 已安装</span></div></div>
+    <div style="font-size:12px;color:#6B7280;margin-top:8px;">完成后断网重启验证：对话、翻译、SOP、全部技能均在本机推理，零外网请求（前端零 CDN 已确认）。</div>
+  </div>
+</div>
+</html>

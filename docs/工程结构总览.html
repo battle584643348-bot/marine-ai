@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海工智舱 · 工程结构总览</title>
+<style>
+  :root { --accent:#8BC8EA; --accent-deep:#2E6E9E; --text:#1A1B1C; --text-2:#6B7280; --bg:#F4F3EE; --card:#FFFFFF; --border:#E4E3DD; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Roboto','PingFang SC','Segoe UI','Microsoft YaHei',Arial,sans-serif; background:var(--bg); color:var(--text); padding:24px 16px 40px; line-height:1.6; }
+  .wrap { max-width:860px; margin:0 auto; }
+  h1 { font-size:21px; margin-bottom:4px; }
+  .sub { color:var(--text-2); font-size:12.5px; margin-bottom:18px; }
+  .band { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px 16px; margin-bottom:14px; }
+  .band-title { font-size:13px; font-weight:700; color:var(--accent-deep); margin-bottom:10px; letter-spacing:.5px; }
+  .tree { font-family:Consolas,'Courier New',monospace; font-size:12.5px; line-height:1.75; }
+  .tree .dir { color:var(--accent-deep); font-weight:700; }
+  .tree .cmt { color:var(--text-2); font-size:11px; }
+  .shortcuts { display:flex; gap:10px; flex-wrap:wrap; }
+  .sc { flex:1 1 200px; min-width:0; background:rgba(139,200,234,.10); border:1px solid rgba(139,200,234,.5); border-radius:10px; padding:10px 12px; font-size:12px; }
+  .sc b { font-size:12.5px; display:block; margin-bottom:2px; }
+  .ok { color:#52C41A; font-weight:700; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th { text-align:left; color:var(--text-2); font-weight:600; padding:5px 8px; border-bottom:1px solid var(--border); }
+  td { padding:5px 8px; border-bottom:1px solid rgba(228,227,221,.6); }
+  tr:last-child td { border-bottom:none; }
+  code { font-family:Consolas,'Courier New',monospace; background:rgba(139,200,234,.14); border-radius:4px; padding:0 4px; font-size:11px; color:#1A3A52; }
+  @media (max-width:520px){ body{padding:16px 10px 32px;} h1{font-size:17px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>海工智舱 · 工程结构总览</h1>
+  <div class="sub">工程主目录：<b>E:\AI LCP\marine-ai</b>（前端 / 后端 / 数据分类存储）· 2026-10-14 已迁移并运行</div>
+
+  <div class="band">
+    <div class="band-title">① 目录结构（前端 / 后端 / 数据分类）</div>
+    <div class="tree">
+      <span class="dir">E:\AI LCP\marine-ai\</span><span class="cmt">  ← 工程根</span><br>
+      ├─ <span class="dir">frontend\</span><span class="cmt">   前端：界面代码</span><br>
+      │&nbsp;&nbsp;├─ index.html<br>
+      │&nbsp;&nbsp;├─ css\style.css<br>
+      │&nbsp;&nbsp;└─ js\（app / api / docs / skills / settings / markdown）<br>
+      ├─ <span class="dir">backend\</span><span class="cmt">   后端：API 与逻辑</span><br>
+      │&nbsp;&nbsp;├─ app\api\（chat / documents / skills / settings）<br>
+      │&nbsp;&nbsp;├─ app\agent\（Agent 主循环）<br>
+      │&nbsp;&nbsp;├─ app\skills\（6 个技能实现）<br>
+      │&nbsp;&nbsp;├─ app\rag\（文档解析 / 检索）<br>
+      │&nbsp;&nbsp;└─ app\core\（LLM / 配置）<br>
+      ├─ <span class="dir">data\</span><span class="cmt">     数据与配置（branches / standards / 索引 / 上传文档）</span><br>
+      ├─ <span class="dir">docs\</span><span class="cmt">     文档与导览图</span><br>
+      ├─ <span class="dir">generated\</span><span class="cmt"> 生成的 Excel 等产物</span><br>
+      ├─ <span class="dir">.vscode\</span><span class="cmt">   编辑器调试配置（F5 调试）</span><br>
+      ├─ config.yaml / run.py / start-dev.bat / requirements.txt / README.md
+    </div>
+  </div>
+
+  <div class="band">
+    <div class="band-title">② 桌面快捷方式（已创建）</div>
+    <div class="shortcuts">
+      <div class="sc"><b>📁 海工智舱-工程文件夹</b>打开工程目录（E:\AI LCP\marine-ai）</div>
+      <div class="sc"><b>▶ 海工智舱-启动服务</b>双击即启动/重启后端（自动释放 8000 端口）</div>
+      <div class="sc"><b>💻 Visual Studio Code</b>直接打开工程文件夹，改代码、F5 调试</div>
+    </div>
+  </div>
+
+  <div class="band">
+    <div class="band-title">③ 迁移验证结果</div>
+    <table>
+      <tr><th>检查项</th><th>结果</th></tr>
+      <tr><td>文件复制完整性</td><td class="ok">57 = 57 文件，全部一致</td></tr>
+      <tr><td>代码硬编码路径</td><td class="ok">无（全部相对路径，可直接移动）</td></tr>
+      <tr><td>服务启动（新位置）</td><td class="ok">http://127.0.0.1:8000 正常，8 分支 / 6 技能 / 知识库完整</td></tr>
+    </table>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>海工智舱 · Marine AI</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><span class="logo">⚓</span><div><div class="brand-name">海工智舱</div><div class="brand-en">Marine AI · Local</div></div></div>
+    <div class="branch-block">
+      <div class="branch-title">专业分支</div>
+      <div id="branchList" class="branch-list"></div>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" data-view="chat"><span class="nav-ico">💬</span>对话</button>
+      <button class="nav-item" data-view="docs"><span class="nav-ico">📚</span>知识库</button>
+      <button class="nav-item" data-view="skills"><span class="nav-ico">🧩</span>技能</button>
+      <button class="nav-item" data-view="settings"><span class="nav-ico">⚙️</span>设置</button>
+    </nav>
+    <div class="status" id="statusPill"><span class="dot" id="statusDot"></span><span id="statusText">检测中…</span></div>
+  </aside>
+
+  <main class="main">
+    <!-- 对话 -->
+    <section id="view-chat" class="view active">
+      <header class="chat-header">
+        <h2>调试助手 <span class="hint" id="modelHint"></span></h2>
+        <button class="btn ghost" id="btnNewChat">新会话</button>
+      </header>
+      <div class="messages" id="messages">
+        <div class="msg system" id="welcome">
+          <div class="bubble system-bubble">
+            <b>海工智舱已就绪。</b><br>
+            你可以：<br>
+            · 上传技术文档 → 提问「查一下知识库里关于软起动器的验收标准」<br>
+            · 「帮我写一份中压断路器的调试SOP（英文）」<br>
+            · 「计算 132kW 电机、电缆200米、允许压降3% 的铜芯电缆截面」<br>
+            · 「谐波清单 5次12%、7次8%，THD是多少？是否超标」<br>
+            · 「生成一份 20 条缺陷的 Punch List Excel」<br>
+            · 中英互译调试文档
+          </div>
+        </div>
+      </div>
+      <div class="composer">
+        <textarea id="input" rows="1" placeholder="输入问题…（Enter 发送，Shift+Enter 换行）"></textarea>
+        <button class="btn primary" id="btnSend">发送</button>
+      </div>
+    </section>
+
+    <!-- 知识库 -->
+    <section id="view-docs" class="view">
+      <header class="chat-header"><h2>知识库 <span class="hint" id="docsStat"></span></h2></header>
+      <div class="dropzone" id="dropzone">
+        <div class="dz-icon">📥</div>
+        <div>拖拽文档到此处，或 <label class="link">点击选择</label></div>
+        <div class="dz-sub">支持 PDF / DOCX / XLSX / TXT / MD / CSV</div>
+        <input type="file" id="fileInput" multiple hidden>
+      </div>
+      <div id="docList" class="doc-list"></div>
+    </section>
+
+    <!-- 技能 -->
+    <section id="view-skills" class="view">
+      <header class="chat-header"><h2>技能 <span class="hint">开启后模型可自动调用</span></h2></header>
+      <div id="skillList" class="skill-list"></div>
+    </section>
+
+    <!-- 设置 -->
+    <section id="view-settings" class="view">
+      <header class="chat-header"><h2>设置</h2></header>
+      <div class="settings-card">
+        <h3>模型提供方</h3>
+        <label class="field"><span>Provider</span>
+          <select id="sProvider">
+            <option value="auto">auto（自动：优先本地 Ollama，否则 API）</option>
+            <option value="ollama">ollama（完全本地推理）</option>
+            <option value="openai">openai（兼容接口 / API）</option>
+            <option value="mock">mock（离线联调，不联网）</option>
+          </select>
+        </label>
+        <h3>Ollama（本地）</h3>
+        <label class="field"><span>Base URL</span><input id="sOllamaUrl" placeholder="http://127.0.0.1:11434"></label>
+        <label class="field"><span>对话模型</span><input id="sOllamaModel" placeholder="qwen2.5:14b"></label>
+        <label class="field"><span>向量模型（语义检索）</span><input id="sOllamaEmbed" placeholder="bge-m3"></label>
+        <label class="check"><input type="checkbox" id="sEmbedEnabled"> 启用语义向量检索（需 Ollama 且已安装向量模型）</label>
+        <h3>OpenAI 兼容接口</h3>
+        <label class="field"><span>Base URL</span><input id="sOpenaiUrl" placeholder="https://api.deepseek.com/v1"></label>
+        <label class="field"><span>API Key</span><input id="sOpenaiKey" type="password" placeholder="留空则使用环境变量 MARINE_LLM_API_KEY"></label>
+        <label class="field"><span>模型</span><input id="sOpenaiModel" placeholder="deepseek-chat"></label>
+        <div class="btn-row">
+          <button class="btn primary" id="btnSaveCfg">保存并应用</button>
+          <button class="btn ghost" id="btnTestCfg">测试连接</button>
+        </div>
+        <div id="healthBox" class="health-box"></div>
+      </div>
+    </section>
+  </main>
+</div>
+<script src="/js/api.js"></script>
+<script src="/js/markdown.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/docs.js"></script>
+<script src="/js/skills.js"></script>
+<script src="/js/settings.js"></script>
+<script>window.App.init();</script>
+</body>
+</html>

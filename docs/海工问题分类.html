@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海工相关问题分类整理</title>
+<style>
+  :root {
+    --accent: #8BC8EA;
+    --accent-deep: #2E6E9E;
+    --text: #1A1B1C;
+    --text-2: #6B7280;
+    --bg: #F4F3EE;
+    --card: #FFFFFF;
+    --border: #E4E3DD;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Roboto','PingFang SC','Segoe UI','Microsoft YaHei',Arial,sans-serif; background: var(--bg); color: var(--text); padding: 24px 16px 40px; line-height: 1.55; }
+  .wrap { max-width: 1000px; margin: 0 auto; }
+  h1 { font-size: 21px; margin-bottom: 4px; }
+  .sub { color: var(--text-2); font-size: 12.5px; margin-bottom: 16px; }
+  .profile { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .pchip { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; font-size: 12.5px; color: var(--text); }
+  .pchip b { color: var(--accent-deep); }
+  .grid { display: flex; flex-direction: column; gap: 12px; }
+  .cat { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 13px 16px; display: flex; gap: 14px; }
+  .num { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #1A3A52; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; }
+  .body { flex: 1; min-width: 0; }
+  .cat h3 { font-size: 14.5px; margin-bottom: 3px; }
+  .cat .when { font-size: 11.5px; color: var(--text-2); margin-bottom: 6px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+  .tag { background: rgba(139,200,234,.16); border: 1px solid rgba(139,200,234,.55); border-radius: 6px; padding: 2px 9px; font-size: 12px; }
+  .pref { font-size: 12px; color: var(--text-2); }
+  .pref b { color: var(--accent-deep); font-weight: 600; }
+  .note { font-size: 11.5px; color: var(--text-2); margin-top: 14px; }
+  @media (max-width: 520px) { .cat { flex-direction: row; } body { padding: 16px 10px 32px; } h1 { font-size: 17px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>海工相关问题分类整理</h1>
+  <div class="sub">依据历史对话的需求记录梳理 · 共 7 类 · 数据口径：对话历史洞察记录，非逐条原文清单</div>
+
+  <div class="profile">
+    <span class="pchip"><b>职业</b>：海工船舶调试工程师</span>
+    <span class="pchip"><b>工作内容</b>：PLC 编程 / 设备调试 / 技术程序撰写</span>
+    <span class="pchip"><b>协作环境</b>：国际化团队 · 中英双语</span>
+    <span class="pchip"><b>常驻</b>：江苏南通 · 海工项目现场</span>
+  </div>
+
+  <div class="grid">
+
+    <div class="cat">
+      <div class="num">1</div>
+      <div class="body">
+        <h3>行业项目与市场情报</h3>
+        <div class="when">首次关注：2026-03</div>
+        <div class="tags"><span class="tag">Sepat FPSO</span><span class="tag">LDV FSO</span><span class="tag">P378 LDV FSO</span><span class="tag">PTSC FPSO NUDM</span><span class="tag">造价</span><span class="tag">建造周期</span><span class="tag">建造地点</span><span class="tag">合同归属</span><span class="tag">船舶规格</span></div>
+        <div class="pref"><b>偏好</b>：具体项目数据要可溯源、逐项核实</div>
+      </div>
+    </div>
+
+    <div class="cat">
+      <div class="num">2</div>
+      <div class="body">
+        <h3>标准与规范溯源</h3>
+        <div class="when">2026-07 起高频</div>
+        <div class="tags"><span class="tag">ASME 标准</span><span class="tag">IEC 标准</span><span class="tag">国标 GB/T</span><span class="tag">条款原文</span><span class="tag">规范编号</span><span class="tag">官方出处</span></div>
+        <div class="pref"><b>偏好</b>：精准引用——具体规范编号、对应章节/条款原文、可访问的官方链接；拒绝"行业惯例"式模糊概括</div>
+      </div>
+    </div>
+
+    <div class="cat">
+      <div class="num">3</div>
+      <div class="body">
+        <h3>电气 / 机械理论与实操</h3>
+        <div class="when">2026-04 起持续</div>
+        <div class="tags"><span class="tag">软起动</span><span class="tag">SFC 逻辑（静止变频起动）</span><span class="tag">Basler 设备</span><span class="tag">谐波抵消</span><span class="tag">相位差</span><span class="tag">继电保护定值</span></div>
+        <div class="pref"><b>偏好</b>：深度理论计算过程与推导逻辑，而非仅给结论</div>
+      </div>
+    </div>
+
+    <div class="cat">
+      <div class="num">4</div>
+      <div class="body">
+        <h3>图纸 / 技术文档智能化</h3>
+        <div class="when">2026-07 起高频</div>
+        <div class="tags"><span class="tag">电气原理图 OCR</span><span class="tag">内容解释</span><span class="tag">文字提取与翻译</span><span class="tag">电气符号识别</span><span class="tag">Codex / OCR 分析</span></div>
+        <div class="pref"><b>偏好</b>：技术截图先结构化总结，再逐项解释关键参数；符号要给出行业含义</div>
+      </div>
+    </div>
+
+    <div class="cat">
+      <div class="num">5</div>
+      <div class="body">
+        <h3>工程技术文书撰写</h3>
+        <div class="when">2026-08 起高频</div>
+        <div class="tags"><span class="tag">调试程序 SOP</span><span class="tag">检查与试验报告 ITR-A</span><span class="tag">缺陷清单 Punch List</span><span class="tag">继保测试定值清单</span><span class="tag">绩效评估</span><span class="tag">工作总结</span></div>
+        <div class="pref"><b>偏好</b>：模板格式生成、中英对照版本、口语转专业书面语、基于事实拒绝夸大</div>
+      </div>
+    </div>
+
+    <div class="cat">
+      <div class="num">6</div>
+      <div class="body">
+        <h3>办公自动化与效率工具</h3>
+        <div class="when">2026-08 起</div>
+        <div class="tags"><span class="tag">Excel 高级数据匹配</span><span class="tag">可下载文档生成</span><span class="tag">Batch 批处理</span><span class="tag">TXT / PDF 批量管理</span></div>
+        <div class="pref"><b>偏好</b>：交付可直接下载的 Excel / Word 文件，脚本可执行</div>
+      </div>
+    </div>
+
+    <div class="cat">
+      <div class="num">7</div>
+      <div class="body">
+        <h3>本地 AI 系统建设（本次会话）</h3>
+        <div class="when">2026-10-13</div>
+        <div class="tags"><span class="tag">海工大模型</span><span class="tag">技能 Skill 体系</span><span class="tag">本地部署</span><span class="tag">完整前后端</span><span class="tag">RAG 知识库</span><span class="tag">工程计算</span></div>
+        <div class="pref"><b>偏好</b>：面向海工调试场景落地，可扩展、可复用</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note">说明：以上分类与典型主题来自历史对话中的需求记录；标注的时间为需求首次出现的时期。如需某一类的逐条完整对话原文，可针对该类进一步追问。</div>
+</div>
+</body>
+</html>

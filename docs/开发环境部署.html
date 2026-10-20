@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海工智舱 · 本地开发环境部署</title>
+<style>
+  :root { --accent:#8BC8EA; --accent-deep:#2E6E9E; --ok:#52C41A; --warn:#FAAD14; --text:#1A1B1C; --text-2:#6B7280; --bg:#F4F3EE; --card:#FFFFFF; --border:#E4E3DD; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Roboto','PingFang SC','Segoe UI','Microsoft YaHei',Arial,sans-serif; background:var(--bg); color:var(--text); padding:24px 16px 40px; line-height:1.55; }
+  .wrap { max-width:940px; margin:0 auto; }
+  h1 { font-size:21px; margin-bottom:4px; }
+  .sub { color:var(--text-2); font-size:12.5px; margin-bottom:18px; }
+  .band { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px 16px; margin-bottom:14px; }
+  .band-title { font-size:13px; font-weight:700; color:var(--accent-deep); margin-bottom:10px; letter-spacing:.5px; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th { text-align:left; color:var(--text-2); font-weight:600; padding:5px 8px; border-bottom:1px solid var(--border); }
+  td { padding:5px 8px; border-bottom:1px solid rgba(228,227,221,.6); }
+  tr:last-child td { border-bottom:none; }
+  .ok { color:var(--ok); font-weight:700; } .todo { color:var(--warn); font-weight:700; }
+  code { font-family:Consolas,'Courier New',monospace; background:rgba(139,200,234,.14); border-radius:4px; padding:0 4px; font-size:11px; color:#1A3A52; }
+  .steps { display:flex; gap:8px; flex-wrap:wrap; align-items:stretch; }
+  .step { flex:1 1 180px; min-width:0; background:rgba(139,200,234,.10); border:1px solid rgba(139,200,234,.5); border-radius:10px; padding:10px 12px; font-size:12px; }
+  .step .n { display:inline-block; background:var(--accent-deep); color:#fff; font-weight:700; font-size:11px; width:20px; height:20px; line-height:20px; text-align:center; border-radius:50%; margin-bottom:6px; }
+  .step b { display:block; font-size:12.5px; margin-bottom:2px; }
+  .flowarrow { text-align:center; color:var(--accent-deep); font-weight:700; font-size:15px; align-self:center; }
+  .eff { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:8px; }
+  .eff .cell { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:9px 12px; font-size:12px; }
+  .eff b { font-size:12.5px; }
+  .note { font-size:11px; color:var(--text-2); margin-top:8px; }
+  @media (max-width:520px){ body{padding:16px 10px 32px;} h1{font-size:17px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>海工智舱 · 本地开发环境部署</h1>
+  <div class="sub">从零到可编辑、可调试、可重启的完整开发环境（本机状态：2026-10-14 已全部配置完成）</div>
+
+  <div class="band">
+    <div class="band-title">① 环境清单（已核验）</div>
+    <table>
+      <tr><th>组件</th><th>用途</th><th>本机状态</th></tr>
+      <tr><td><code>Python 3.13.13</code></td><td>后端运行（FastAPI）</td><td class="ok">✅ 已装</td></tr>
+      <tr><td><code>pip 依赖</code>（requirements.txt 8 项）</td><td>fastapi / uvicorn / openpyxl / pypdf 等</td><td class="ok">✅ 全部 OK</td></tr>
+      <tr><td><code>Node.js v20</code></td><td>前端 JS 语法检查（可选）</td><td class="ok">✅ 已装</td></tr>
+      <tr><td><code>Git 2.51</code></td><td>版本管理（可选）</td><td class="ok">✅ 已装</td></tr>
+      <tr><td><code>VS Code 1.141.0</code></td><td>代码编辑器 + 调试器</td><td class="ok">✅ 已装（含 Python 调试扩展 + 中文界面）</td></tr>
+      <tr><td><code>项目代码 marine-ai\</code></td><td>前端 + 后端 + 配置全量</td><td class="ok">✅ 已就绪</td></tr>
+    </table>
+  </div>
+
+  <div class="band">
+    <div class="band-title">② 部署四步</div>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><b>装 VS Code</b><code>winget install Microsoft.VisualStudioCode</code>，再装 Python 与中文扩展</div>
+      <div class="flowarrow">→</div>
+      <div class="step"><span class="n">2</span><b>打开项目</b>VS Code → 打开文件夹 → 选 <code>marine-ai</code> 根目录（已配好 .vscode 调试）</div>
+      <div class="flowarrow">→</div>
+      <div class="step"><span class="n">3</span><b>启动后端</b>双击 <code>start-dev.bat</code>，或 VS Code 按 F5（调试模式）</div>
+      <div class="flowarrow">→</div>
+      <div class="step"><span class="n">4</span><b>编辑生效</b>前端刷新即见、后端重启即见（规则见下）</div>
+    </div>
+  </div>
+
+  <div class="band">
+    <div class="band-title">③ 编辑生效规则</div>
+    <div class="eff">
+      <div class="cell"><b>前端</b> <code>frontend\*.html / *.css / *.js</code><br>保存 → 浏览器刷新（必要时 <code>?fresh=时间戳</code> 强制重载）</div>
+      <div class="cell"><b>后端</b> <code>backend\**\*.py</code><br>保存 → 重启服务（start-dev.bat 或 F5）</div>
+      <div class="cell"><b>配置</b> <code>branches.json / standards.json / config.yaml</code><br>保存 → 重启服务</div>
+      <div class="cell"><b>页面设置</b>「设置」页保存<br>即时生效（user_config.yaml 动态加载）</div>
+    </div>
+  </div>
+
+  <div class="note">本机已全部配置完成：VS Code 1.141.0（Python/debugpy/Pylance/中文扩展）、start-dev.bat（一键启动/重启）、.vscode/launch.json（F5 调试）。服务当前运行于 http://127.0.0.1:8000。</div>
+</div>
+</body>
+</html>

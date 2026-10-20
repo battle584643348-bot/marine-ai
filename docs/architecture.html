@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海工智舱 · 系统架构</title>
+<style>
+  :root {
+    --accent: #8BC8EA;
+    --accent-deep: #2E6E9E;
+    --text: #1A1B1C;
+    --text-2: #6B7280;
+    --bg: #F4F3EE;
+    --card: #FFFFFF;
+    --border: #E4E3DD;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Roboto','PingFang SC','Segoe UI','Microsoft YaHei',Arial,sans-serif; background: var(--bg); color: var(--text); padding: 24px 16px 40px; line-height: 1.5; }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  .sub { color: var(--text-2); font-size: 13px; margin-bottom: 20px; }
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12px; color: var(--text-2); margin-bottom: 18px; }
+  .legend span b { color: var(--text); }
+  .layer { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; }
+  .layer-title { font-size: 13px; font-weight: 600; color: var(--accent-deep); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .layer-title .tag { background: rgba(139,200,234,.18); color: var(--accent-deep); border-radius: 6px; padding: 1px 8px; font-size: 11px; font-weight: 500; }
+  .boxes { display: flex; gap: 10px; flex-wrap: wrap; }
+  .box { flex: 1 1 140px; min-width: 0; background: rgba(139,200,234,.10); border: 1px solid rgba(139,200,234,.5); border-radius: 10px; padding: 10px 12px; }
+  .box h4 { font-size: 13px; margin-bottom: 3px; }
+  .box p { font-size: 11.5px; color: var(--text-2); }
+  .flow { text-align: center; color: var(--accent-deep); font-size: 16px; line-height: 1; margin: 2px 0; }
+  .note { font-size: 12px; color: var(--text-2); margin-top: 12px; }
+  .note code { background: #eee; border-radius: 4px; padding: 0 5px; }
+  @media (max-width: 480px) {
+    .boxes { flex-direction: column; }
+    body { padding: 16px 10px 32px; }
+    h1 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>海工智舱 · Marine AI — 本地系统架构</h1>
+  <div class="sub">本地部署 · 海工/船舶调试大模型 + 技能（Skill）体系 · 完整前后端</div>
+
+  <div class="legend">
+    <span><b>⬇⬆</b> 数据/应答双向流</span>
+    <span><b>◆</b> 技能调用（工具）协议</span>
+  </div>
+
+  <div class="layer">
+    <div class="layer-title">① 前端层 <span class="tag">浏览器 SPA（无构建、零安装）</span></div>
+    <div class="boxes">
+      <div class="box"><h4>💬 对话</h4><p>SSE 流式渲染 · Markdown · 技能芯片 · 引用来源</p></div>
+      <div class="box"><h4>📚 知识库</h4><p>拖拽上传 PDF/DOCX/XLSX/TXT/MD · 删除 · 重建索引</p></div>
+      <div class="box"><h4>🧩 技能面板</h4><p>6 个技能一览 · 逐个启停</p></div>
+      <div class="box"><h4>⚙️ 设置</h4><p>Provider/模型/API Key · 连接测试 · 健康状态</p></div>
+    </div>
+  </div>
+  <div class="flow">⬇ SSE 事件流（token / tool_start / tool_end / done） ｜ ⬆ JSON 请求</div>
+
+  <div class="layer">
+    <div class="layer-title">② API 层 <span class="tag">FastAPI · 127.0.0.1:8000</span></div>
+    <div class="boxes">
+      <div class="box"><h4>/api/chat</h4><p>流式对话（SSE）+ 会话历史</p></div>
+      <div class="box"><h4>/api/documents</h4><p>上传 · 列表 · 删除 · 重建</p></div>
+      <div class="box"><h4>/api/skills</h4><p>技能列表 · 启停（持久化）</p></div>
+      <div class="box"><h4>/api/config · /health</h4><p>配置读写（脱敏）· 健康检查 · 文件下载</p></div>
+    </div>
+  </div>
+  <div class="flow">⬇ 调用</div>
+
+  <div class="layer">
+    <div class="layer-title">③ 核心层 <span class="tag">Agent 循环 + 双通道 LLM + RAG</span></div>
+    <div class="boxes">
+      <div class="box"><h4>🤖 Agent 循环</h4><p>RAG 自动接地 → 模型流式输出 → 解析技能调用 JSON → 回灌结果 → 循环（≤4 轮）</p></div>
+      <div class="box"><h4>⚡ LLM 双通道</h4><p>auto 自动探测 · Ollama（本地 qwen2.5）· OpenAI 兼容接口（DeepSeek/Qwen/GLM）· Mock 离线联调</p></div>
+      <div class="box"><h4>🔍 RAG 混合检索</h4><p>中英分词 → TF-IDF 稀疏向量（零重依赖）＋ 可选 Ollama 语义向量（bge-m3）→ 加权融合</p></div>
+      <div class="box"><h4>🧠 技能注册表</h4><p>自动发现 skills/ 下模块 · 启停状态持久化 · 统一参数 Schema</p></div>
+    </div>
+  </div>
+  <div class="flow">⬇ 技能调用（模型输出 {"tool":"...","args":{...}}）</div>
+
+  <div class="layer">
+    <div class="layer-title">④ 技能层 <span class="tag">海工调试专属 · 6 个开箱即用</span></div>
+    <div class="boxes">
+      <div class="box"><h4>🔎 knowledge_search</h4><p>知识库深度检索，返回原文片段与来源</p></div>
+      <div class="box"><h4>📘 standard_lookup</h4><p>IEC/IEEE/GB/ASME/API 标准速查（内置索引）</p></div>
+      <div class="box"><h4>📝 sop_generator</h4><p>SOP/ITR 调试程序起草（中/英，规范模板）</p></div>
+      <div class="box"><h4>🧮 calc_engine</h4><p>电压降/电缆选型/谐波THD/无功补偿/软起动/谐振 — 确定性公式</p></div>
+      <div class="box"><h4>🌐 translate</h4><p>中英技术翻译（海工术语表）</p></div>
+      <div class="box"><h4>📊 excel_report</h4><p>Punch List / 测试记录表 / 通用清单 → 可下载 xlsx</p></div>
+    </div>
+  </div>
+  <div class="flow">⬇ 读写</div>
+
+  <div class="layer">
+    <div class="layer-title">⑤ 数据层 <span class="tag">纯本地 · 无外部数据库</span></div>
+    <div class="boxes">
+      <div class="box"><h4>data/uploads/</h4><p>上传的技术文档（PDF/DOCX/XLSX/TXT/MD）</p></div>
+      <div class="box"><h4>data/index.json</h4><p>RAG 索引持久化（切块 + TF-IDF 向量）</p></div>
+      <div class="box"><h4>data/standards.json</h4><p>标准速查内置索引</p></div>
+      <div class="box"><h4>data/user_config.yaml</h4><p>运行期配置覆盖层（设置页写入）</p></div>
+      <div class="box"><h4>generated/</h4><p>技能生成的 Excel/文档（/api/files 下载）</p></div>
+    </div>
+  </div>
+
+  <div class="note">
+    说明：本图描述 v1.0 实际实现的确定性架构。LLM 通道三选一：<code>auto</code>（默认，自动探测）、<code>ollama</code>（完全本地）、<code>openai</code>（云端兼容接口）；未配置任何模型时自动进入 <code>mock</code> 离线模式保证链路可用。
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<html style="margin:0;padding:0;">
+<div style="background-color:transparent;box-sizing:border-box;--accent:var(--m-07);padding:4px;font-family:'Roboto','PingFang SC','Segoe UI',Arial,sans-serif;color:#1A1B1C;">
+  <style>
+    .card{background:#fff;border:1px solid #E4E3DD;border-radius:12px;padding:14px 16px;box-sizing:border-box;margin:8px 0;}
+    .badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;background:rgba(148,212,208,0.18);color:#0F6B66;border:1px solid rgba(148,212,208,0.5);}
+    .badge-l{background:rgba(158,172,234,0.16);color:#3D4FBF;border-color:rgba(158,172,234,0.55);}
+    .badge-s{background:rgba(244,179,147,0.18);color:#B4551C;border-color:rgba(244,179,147,0.6);}
+    .k{font-size:11px;color:#6B7280;letter-spacing:.5px;}
+    .v{font-size:13px;font-weight:600;margin-top:2px;}
+    .node{background:#fff;border:1px solid #E4E3DD;border-radius:10px;padding:8px 10px;min-width:0;}
+    .flow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;}
+    .arrow{display:flex;align-items:center;color:#94D4D0;font-weight:700;font-size:16px;}
+    .table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px;}
+    .table th{background:rgba(148,212,208,0.16);text-align:left;padding:6px 8px;font-size:12px;border:1px solid #E4E3DD;}
+    .table td{padding:6px 8px;border:1px solid #E4E3DD;vertical-align:top;}
+    .ok{color:#2F8F46;font-weight:700;}
+    .warn{color:#C77D12;font-weight:600;}
+  </style>
+
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <div>
+      <div style="font-size:16px;font-weight:600;">diagram_annotate · 单线图系统标注</div>
+      <div style="font-size:12px;color:#6B7280;margin-top:2px;">一个技能 · 两种模式 · 三个输出 —— 由 mark_lighting_diagram.py 与 mark_sld_diagram.py 合并封装</div>
+    </div>
+    <div style="margin-left:auto;">
+      <span class="badge">已注册 · 已启用</span>
+      <span class="badge" style="margin-left:6px;">drawing 分支已挂载</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="k">输入</div>
+    <div class="flow" style="margin-top:8px;">
+      <div class="node" style="flex:1 1 200px;"><div class="k">单线图 PDF</div><div class="v" style="font-size:12px;">照明图 / 开关柜 SLD 原图</div></div>
+      <div class="arrow">→</div>
+      <div class="node" style="flex:1 1 200px;"><div class="k">电缆清册 XLSX</div><div class="v" style="font-size:12px;">CABLE TAG · TO EQUIP · SYSTEM NO · SYSTEM DESCRIPTION</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="k">模式分发（参数 mode）</div>
+    <div class="flow" style="margin-top:8px;">
+      <div class="node" style="flex:1 1 220px;border-color:rgba(158,172,234,0.6);">
+        <div><span class="badge badge-l">lighting · 照明/配电</span></div>
+        <div style="font-size:12px;color:#4B5563;margin-top:6px;line-height:1.6;">
+          ① CKT/LOOP 回路识别<br>
+          ② 配电板框 + 回路框<br>
+          ③ 标签：&lt;系统号&gt;-&lt;回路号&gt; / LOOP-&lt;回路号&gt;<br>
+          ④ 中文 FreeText（china-s，福昕可编辑）
+        </div>
+      </div>
+      <div class="node" style="flex:1 1 220px;border-color:rgba(244,179,147,0.7);">
+        <div><span class="badge badge-s">sld · 开关柜</span></div>
+        <div style="font-size:12px;color:#4B5563;margin-top:6px;line-height:1.6;">
+          ① 表头列自动定位（兼容不同排版）<br>
+          ② P 动力电缆馈线锚点 + 设备框<br>
+          ③ 母线 BUSBAR 框 + 盘号识别<br>
+          ④ 栅格化图纸自动 RapidOCR（可选）<br>
+          ⑤ 识别结果回填清册副本
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="k">输出三件套（generated/diagram_mark/）</div>
+    <div class="flow" style="margin-top:8px;">
+      <div class="node" style="flex:1 1 160px;"><div class="v">① 系统标注 PDF</div><div style="font-size:11.5px;color:#6B7280;margin-top:2px;">注释框+可编辑标签，不烘焙图纸</div></div>
+      <div class="node" style="flex:1 1 160px;"><div class="v">② 未匹配电缆清单.xlsx</div><div style="font-size:11.5px;color:#6B7280;margin-top:2px;">图纸未匹配 + 清册未上图</div></div>
+      <div class="node" style="flex:1 1 160px;"><div class="v">③ 清册_含SLD识别.xlsx</div><div style="font-size:11.5px;color:#6B7280;margin-top:2px;">仅 sld 模式 · 新增 SLD识别结果 工作表 · TBA 灰底</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="k">真实数据端到端验证（清册 2450 条电缆 / 47 配电板 / 116 系统）</div>
+    <table class="table">
+      <tr><th>模式</th><th>测试图纸</th><th>结果</th><th>结论</th></tr>
+      <tr>
+        <td style="white-space:nowrap;"><span class="badge badge-l">lighting</span></td>
+        <td>SD-00012 照明&amp;小功率单线图</td>
+        <td>7 页标注 · 19 框 · 19 文本框 · 0 未匹配</td>
+        <td class="ok">✓ 回归通过</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-s">sld</span></td>
+        <td>SD-00005 690V 开关柜单线图</td>
+        <td>18 页 · 58 框 · 58 文本框 · 10 未匹配 · 115 条识别回填</td>
+        <td class="ok">✓ 通过</td>
+      </tr>
+      <tr>
+        <td colspan="4" style="background:#FFF9F0;"><span class="warn">⚠ 可选增强：</span>RapidOCR（rapidocr_onnxruntime）未安装 —— 纯文字层图纸不受影响；仅栅格化/扫描图纸的 OCR 分支会跳过。需要时执行 <span style="font-family:Consolas,monospace;background:#F4F3EE;padding:0 4px;border-radius:4px;">pip install rapidocr_onnxruntime</span> 后重启服务即可。</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card" style="background:rgba(148,212,208,0.08);">
+    <div class="k">使用方式（在「图纸智能」分支对话即可）</div>
+    <div style="font-size:12.5px;line-height:1.8;margin-top:4px;">
+      照明图 → 上传 PDF，说“按系统标注这张照明单线图”<br>
+      开关柜 → 上传 PDF，说“给这张 690V 开关柜单线图做 SLD 系统标注，并回填清册”<br>
+      <span style="color:#6B7280;">技能参数：mode=lighting/sld · input_pdf=图纸路径 · schedule=清册路径（默认桌面补全版）· sheet=cable schedule</span>
+    </div>
+  </div>
+</div>
+</html>

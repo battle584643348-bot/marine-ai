@@ -1,0 +1,10 @@
+{
+  "python.defaultInterpreterPath": "python",
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "editor.formatOnSave": false,
+  "[python]": { "editor.tabSize": 4 },
+  "[javascript]": { "editor.tabSize": 2 },
+  "[html]": { "editor.tabSize": 2 },
+  "search.exclude": { "data/index.json": true, "generated/**": true }
+}

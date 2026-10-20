@@ -1,0 +1,62 @@
+# ============================================================
+# 海工智舱 - 本地配置
+# 说明：运行时在页面「设置」中修改的项会写入 data/user_config.yaml
+#       并覆盖本文件的同名项，不需要手改本文件。
+# ============================================================
+
+server:
+  host: 127.0.0.1
+  port: 8000
+
+llm:
+  # provider: auto | ollama | openai | mock
+  #   auto   - 优先检测本机 Ollama，不可用则回退 openai-compatible（需配 api_key）
+  #   ollama - 完全本地推理（需先安装 Ollama 并拉取模型，如 qwen2.5:14b）
+  #   openai - 云端/任意 OpenAI 兼容接口（DeepSeek / Qwen / GLM / Moonshot ...）
+  #   mock   - 离线演示模式（不联网，用于无模型时联调系统）
+  provider: auto
+
+  ollama:
+    base_url: http://127.0.0.1:11434
+    model: qwen2.5:14b            # 本地对话模型
+    embedding_model: bge-m3       # 本地向量模型（语义检索，可选）
+    embedding_enabled: false      # 未安装 Ollama 时保持 false，使用内置关键词检索
+
+  openai_compatible:
+    base_url: https://api.deepseek.com/v1   # 也支持 https://dashscope.aliyuncs.com/compatible-mode/v1 等
+    api_key: ""                            # 建议通过系统环境变量 DEEPSEEK_API_KEY 注入，避免明文
+    model: deepseek-chat
+    temperature: 0.3
+
+  mock:
+    model: mock-dry-run
+
+  temperature: 0.3
+  max_tokens: 4096
+
+rag:
+  chunk_size: 800          # 切块字符数
+  chunk_overlap: 120       # 相邻块重叠
+  top_k: 5                 # 每轮问答自动注入知识条数
+  search_top_k: 8          # 知识库技能默认返回条数
+  hybrid_weight_sparse: 0.6   # 关键词(TF-IDF)权重
+  hybrid_weight_dense: 0.4    # 语义向量权重（启用 embedding 后生效）
+  upload_dir: data/uploads
+  index_path: data/index.json
+
+agent:
+  max_tool_rounds: 4       # 单轮对话最多连续调用技能次数
+  history_turns: 12        # 携带的上下文轮数
+
+skills:
+  # 默认启用的技能（可在页面「技能」面板逐个开关）
+  enabled:
+    - knowledge_search
+    - standard_lookup
+    - sop_generator
+    - calc_engine
+    - translate
+    - excel_report
+
+files:
+  generated_dir: generated

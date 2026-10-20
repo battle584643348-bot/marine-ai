@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海工智舱 · 本地开发环境搭建</title>
+<style>
+  :root { --accent:#8BC8EA; --accent-deep:#2E6E9E; --text:#1A1B1C; --text-2:#6B7280; --bg:#F4F3EE; --card:#FFFFFF; --border:#E4E3DD; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Roboto','PingFang SC','Segoe UI','Microsoft YaHei',Arial,sans-serif; background:var(--bg); color:var(--text); padding:24px 16px 40px; line-height:1.55; }
+  .wrap { max-width:960px; margin:0 auto; }
+  h1 { font-size:21px; margin-bottom:4px; }
+  .sub { color:var(--text-2); font-size:12.5px; margin-bottom:18px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px 16px; margin-bottom:14px; }
+  .card h3 { font-size:14px; margin-bottom:10px; color:var(--accent-deep); }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  th { text-align:left; color:var(--text-2); font-weight:600; padding:5px 8px; border-bottom:1px solid var(--border); }
+  td { padding:5px 8px; border-bottom:1px solid rgba(228,227,221,.6); vertical-align:top; }
+  tr:last-child td { border-bottom:none; }
+  .ok { color:#2E7D32; font-weight:700; } .miss { color:#C62828; font-weight:700; }
+  code, .code { font-family:Consolas,'Courier New',monospace; background:rgba(139,200,234,.14); border-radius:4px; padding:0 4px; font-size:11.5px; color:#1A3A52; }
+  .steps { display:flex; flex-direction:column; gap:10px; }
+  .step { display:flex; gap:10px; background:rgba(139,200,234,.08); border:1px solid rgba(139,200,234,.4); border-radius:10px; padding:10px 12px; }
+  .step .num { flex-shrink:0; width:22px; height:22px; border-radius:50%; background:var(--accent-deep); color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .step b { font-size:12.5px; display:block; } .step p { font-size:12px; color:var(--text-2); margin-top:2px; }
+  .note { font-size:11.5px; color:var(--text-2); margin-top:8px; }
+  @media (max-width:520px){ body{padding:16px 10px 32px;} h1{font-size:17px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>海工智舱 · 本地开发环境搭建</h1>
+  <div class="sub">目标：在本机把「能跑 + 能改 + 能调试」的全套开发环境部署好 · 2026-10 实测</div>
+
+  <div class="card">
+    <h3>① 现状盘点（已实测）</h3>
+    <table>
+      <tr><th>组件</th><th>状态</th><th>用途</th></tr>
+      <tr><td>Python 3.13.13 + pip</td><td class="ok">✔ 已装</td><td>后端 FastAPI 运行环境（依赖已全部安装）</td></tr>
+      <tr><td>Node.js v20 + npm</td><td class="ok">✔ 已装</td><td>前端是零构建 SPA，实际用不到；保留用于未来扩展</td></tr>
+      <tr><td>Git 2.51</td><td class="ok">✔ 已装</td><td>版本管理 / 后续从 GitHub 拉取技能仓库</td></tr>
+      <tr><td>VS Code</td><td class="miss">✘ 缺失（正在安装）</td><td>代码编辑器，前端后端都在这里改</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>② 安装与配置步骤</h3>
+    <div class="steps">
+      <div class="step"><span class="num">1</span><div><b>安装 VS Code（进行中）</b><p>命令：<code>winget install Microsoft.VisualStudioCode</code>；也可官网 code.visualstudio.com 手动下载</p></div></div>
+      <div class="step"><span class="num">2</span><div><b>装中文语言包 + Python 插件</b><p>VS Code 扩展市场搜 <code>Chinese (Simplified)</code> 和 <code>Python</code>（含 Pylance 语法检查、代码补全、调试）</p></div></div>
+      <div class="step"><span class="num">3</span><div><b>用 VS Code 打开项目</b><p>文件 → 打开文件夹 → 选择 <code>marine-ai</code> 根目录</p></div></div>
+      <div class="step"><span class="num">4</span><div><b>内置终端启动后端</b><p>终端（Ctrl+`）→ <code>python run.py</code>，访问 http://127.0.0.1:8000</p></div></div>
+      <div class="step"><span class="num">5</span><div><b>开始编辑</b><p>前端改 <code>frontend\</code> 保存后浏览器刷新即生效；后端改 <code>backend\app\</code> 保存后重启 <code>python run.py</code></p></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>③ 编辑—运行闭环</h3>
+    <table>
+      <tr><th>改什么</th><th>在哪改</th><th>如何生效</th></tr>
+      <tr><td>界面样式 / 文案 / 交互</td><td><code>frontend\</code>（html/css/js）</td><td>保存 → 浏览器刷新（必要时 <code>?fresh=时间戳</code>）</td></tr>
+      <tr><td>接口 / 技能 / Agent 逻辑</td><td><code>backend\app\</code>（.py）</td><td>保存 → 终端停掉旧进程 → 重新 <code>python run.py</code></td></tr>
+      <tr><td>分支 / 标准 / 参数</td><td><code>data\*.json</code>、<code>config.yaml</code></td><td>重启服务生效</td></tr>
+    </table>
+    <div class="note">调试技巧：VS Code 的 Python 插件支持断点调试——在 main.py 按 F5 即可图形化断点、看变量，适合排查后端逻辑。</div>
+  </div>
+
+  <div class="card">
+    <h3>④ 可选增强（推荐）</h3>
+    <table>
+      <tr><th>项目</th><th>作用</th><th>做法</th></tr>
+      <tr><td>Python 虚拟环境 venv</td><td>隔离依赖，避免污染全局 Python</td><td>项目根执行 <code>python -m venv .venv</code>，之后用 <code>.venv\Scripts\activate</code> 激活再启动</td></tr>
+      <tr><td>Git 初始化</td><td>记录每次修改，可回滚</td><td>项目根 <code>git init</code> → 定期 <code>git commit</code></td></tr>
+      <tr><td>Ollama 本地模型</td><td>替换 mock 模式，真正用大模型回答</td><td>ollama.com 下载 → <code>ollama pull qwen2.5:14b</code> → 设置页选 Ollama</td></tr>
+    </table>
+  </div>
+</div>
+</body>
+</html>

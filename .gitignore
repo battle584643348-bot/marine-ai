@@ -1,0 +1,29 @@
+# ── Python 运行时垃圾 ────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# ── 运行期状态：可重建，且可能含密钥 ─────────────────
+# user_config.yaml 会被「设置」页写入 api_key，绝不能入库
+data/user_config.yaml
+# RAG 索引由 uploads/ 重建，属派生物
+data/index.json
+
+# ── 用户上传的原始文档 ──────────────────────────────
+# 体积大、多为项目图纸与清册，禁止入库
+data/uploads/*
+
+# ── 技能产出 ────────────────────────────────────────
+# 可重建；且含 FPSO 项目图纸，属敏感资料
+generated/
+
+# ── 系统 / 编辑器 ───────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*
+*.swp
+*.log

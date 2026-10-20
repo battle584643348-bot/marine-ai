@@ -1,0 +1,85 @@
+<html style="margin:0;padding:0;">
+<div style="background-color:transparent;box-sizing:border-box;--accent:var(--m-02);padding:4px;font-family:'Roboto','PingFang SC','Segoe UI',Arial,sans-serif;color:#1A1B1C;">
+  <style>
+    .card{background:#fff;border:1px solid #E4E3DD;border-radius:12px;padding:14px 16px;box-sizing:border-box;margin:8px 0;}
+    .k{font-size:11px;color:#6B7280;letter-spacing:.5px;}
+    .node{background:#fff;border:1px solid #E4E3DD;border-radius:10px;padding:8px 10px;min-width:0;}
+    .pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:600;background:rgba(163,213,232,0.18);color:#17627E;border:1px solid rgba(163,213,232,0.55);margin:2px 3px 2px 0;}
+    .flow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;}
+    .arrow{display:flex;align-items:center;color:#A3D5E8;font-weight:700;font-size:15px;}
+    .code{font-family:Consolas,monospace;background:#F4F3EE;border:1px solid #E4E3DD;border-radius:6px;padding:1px 6px;font-size:12px;color:#17627E;}
+  </style>
+
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <div>
+      <div style="font-size:16px;font-weight:600;">海工智舱 · 技能注册表架构</div>
+      <div style="font-size:12px;color:#6B7280;margin-top:2px;">每个技能 = 独立功能块：一个文件 · 一套接口 · 三处调用入口</div>
+    </div>
+    <div style="margin-left:auto;"><span class="pill">当前 8 个技能块</span><span class="pill">自动发现</span><span class="pill">状态持久化</span></div>
+  </div>
+
+  <div class="card">
+    <div class="k">① 功能块存放：backend/app/skills/（每个 .py 即一个技能）</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+      <span class="pill">diagram_annotate.py 单线图标注（照明/开关柜）</span>
+      <span class="pill">calc_engine.py 工程计算引擎</span>
+      <span class="pill">standard_lookup.py 标准速查</span>
+      <span class="pill">sop_generator.py 调试程序/SOP</span>
+      <span class="pill">excel_report.py Excel 报告</span>
+      <span class="pill">knowledge_search.py 知识库检索</span>
+      <span class="pill">translate.py 中英翻译</span>
+      <span class="pill">base.py 技能基类（接口定义）</span>
+      <span class="pill">registry.py 注册表（自动发现）</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="k">② 统一封装接口（继承 base.py 的 Skill 基类，四个声明 + 一个执行）</div>
+    <div class="node" style="margin-top:8px;background:#FBFCFE;">
+      <div class="code">class XxxSkill(Skill):</div>
+      <div style="font-size:12.5px;line-height:2;color:#374151;">
+        &nbsp;&nbsp;name = "diagram_annotate"&nbsp;&nbsp;<span style="color:#6B7280;"># 技能标识</span><br>
+        &nbsp;&nbsp;title / description&nbsp;&nbsp;<span style="color:#6B7280;"># 模型判断何时调用的依据</span><br>
+        &nbsp;&nbsp;parameters = [...&nbsp;mode/input_pdf/schedule...]&nbsp;&nbsp;<span style="color:#6B7280;"># 参数 Schema</span><br>
+        &nbsp;&nbsp;async def run(ctx, args) -&gt; {"type":"file", "content":..., "meta":...}&nbsp;&nbsp;<span style="color:#6B7280;"># 执行体</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="k">③ 注册与调度：registry.py 启动时自动扫描 → 注册表 → 三处入口</div>
+    <div class="flow" style="margin-top:8px;">
+      <div class="node" style="flex:1 1 140px;"><div class="k">自动发现</div><div class="v" style="font-size:12px;">pkgutil 扫描 skills/ 目录，凡 Skill 子类自动进注册表，零配置</div></div>
+      <div class="arrow">→</div>
+      <div class="node" style="flex:1 1 160px;"><div class="k">注册表</div><div style="font-size:12px;color:#4B5563;margin-top:2px;">name/描述/参数 + enabled 状态<br><span class="code">user_config.json</span> 持久化</div></div>
+      <div class="arrow">→</div>
+      <div class="node" style="flex:1 1 200px;"><div class="k">三处调用入口</div>
+        <div style="font-size:12px;color:#4B5563;margin-top:4px;line-height:1.7;">
+          💬 对话触发 —— Agent 按分支白名单自动调用<br>
+          🧩 前端技能页 —— 一键开关<br>
+          🔌 API —— <span class="code">GET /api/skills</span> · <span class="code">POST /api/skills/{name}/toggle</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="k">④ 分支挂载：data/branches.json 决定哪些分支能用哪些技能</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;font-size:12.5px;">
+      <div class="node" style="flex:1 1 150px;"><span style="font-weight:600;">图纸智能</span><br><span style="color:#4B5563;">translate · diagram_annotate</span></div>
+      <div class="node" style="flex:1 1 150px;"><span style="font-weight:600;">电气理论</span><br><span style="color:#4B5563;">calc_engine</span></div>
+      <div class="node" style="flex:1 1 150px;"><span style="font-weight:600;">标准溯源</span><br><span style="color:#4B5563;">standard_lookup</span></div>
+      <div class="node" style="flex:1 1 150px;"><span style="font-weight:600;">文书撰写</span><br><span style="color:#4B5563;">sop · excel_report · translate</span></div>
+    </div>
+  </div>
+
+  <div class="card" style="background:rgba(163,213,232,0.08);">
+    <div class="k">⑤ 以后新增技能 = 三步（无需改任何现有代码）</div>
+    <div style="font-size:12.5px;line-height:2;margin-top:4px;color:#374151;">
+      1️⃣ 在 <span class="code">backend/app/skills/</span> 放一个新 .py（继承 Skill 基类）<br>
+      2️⃣ 重启服务 —— registry 自动发现并注册（默认关闭）<br>
+      3️⃣ 前端技能页打开开关 / 或把它加进某分支的 skills 列表
+    </div>
+  </div>
+</div>
+</html>
