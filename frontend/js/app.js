@@ -125,6 +125,56 @@ window.App = (function () {
           line.textContent += " — " + ev.summary.replace(/\n/g, " ").slice(0, 150);
         }
         meta.appendChild(line);
+
+        // ===== 生成的文件：渲染成可点击的下载链接 =====
+        // ev.files 由后端 loop.py 的 _result_files() 产生，形如
+        //   [{ name: "未匹配电缆清单.xlsx", url: "/api/files/diagram_mark/xxx.xlsx" }]
+        // 纯文本技能（翻译、检索）不会有这个字段，此时 ev.files 是 undefined。
+        //
+        // Array.isArray 比 `ev.files && ev.files.length` 更严格：字符串也有 .length，
+        // 如果后端某天误传了字符串，前者会安全跳过，后者会去遍历字符串的每个字符。
+        if (Array.isArray(ev.files) && ev.files.length) {
+          const fileRow = document.createElement("div");
+          fileRow.className = "meta-line";
+
+          // forEach 是数组的遍历方法；用普通 function 而不是箭头函数，
+          // 是为了和这个文件里其他回调的风格保持一致（这里用不到 this，两者等价）
+          ev.files.forEach(function (f) {
+            // 防御式取值：后端字段缺失时得到空串，不会因为 f.url 是 undefined 而抛错
+            const url = String((f && f.url) || "");
+
+            // ★ 白名单校验：只允许站内 /api/files/ 开头的地址。
+            //   为什么要校验？因为 a.href = "javascript:alert(1)" 在浏览器里是合法的，
+            //   点击就会执行脚本。这个值虽然来自我们自己的后端，但一旦后端被注入
+            //   （比如技能参数里混进了攻击者控制的字符串），这里就是最后一道闸门。
+            //   「不信任任何外部输入」这条原则，对自家后端也要留一份。
+            if (!url.startsWith("/api/files/")) return;
+
+            // 【为什么全程用 createElement / textContent，而不用 innerHTML 拼字符串】
+            //   假设文件名是 <img src=x onerror=alert(document.cookie)>，
+            //   写成 el.innerHTML = '<a href="...">' + f.name + '</a>' 时，
+            //   浏览器会把这个文件名当成 HTML 解析，onerror 里的脚本立刻执行 ——
+            //   这就是 XSS（跨站脚本）。而某个模型若被诱导输出这样的文件名，
+            //   文件就真的会被这样创建。
+            //   textContent 的语义是「这里的字符全部当纯文本」，浏览器绝不会解析标签，
+            //   所以它是天然安全的。代价只是不能写 HTML 标签，而链接本来就要靠
+            //   createElement('a') 来建，正好不需要 innerHTML。
+            const a = document.createElement("a");
+            a.className = "file-link";          // 复用 style.css:104 已定义的样式
+            a.href = url;                       // 相对地址，浏览器自动补上当前域名
+            a.setAttribute("download", "");     // 提示浏览器「下载」而不是「跳转打开」
+            a.textContent = "⬇ 下载 " + String((f && f.name) || "生成的文件");
+            a.style.display = "inline-block";
+            a.style.marginTop = "4px";
+            a.style.marginRight = "12px";
+
+            fileRow.appendChild(a);
+          });
+
+          // 只有真的加进去过链接才挂到界面上，避免出现一个空白的行
+          if (fileRow.childNodes.length) meta.appendChild(fileRow);
+        }
+
         scrollBottom();
       } else if (ev.type === "error") {
         body.innerHTML = "";

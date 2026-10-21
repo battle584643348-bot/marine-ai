@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import AsyncIterator, Dict, List, Optional
 
 from ..core.config import Config
+from ..core.files import generated_url
 from ..rag.index import DocumentIndex
 from ..skills.registry import SkillRegistry
 from .context import AgentContext
@@ -18,6 +19,35 @@ _SESSIONS: Dict[str, List[dict]] = {}
 _JSON_BLOCK = re.compile(r"```(?:json)?\s*(.*?)```", re.S)
 _BRANCHES_FILE = Path(__file__).resolve().parents[3] / "data" / "branches.json"
 _DEFAULT_BRANCH = "overall"
+
+
+def _result_files(cfg: Config, result: Dict) -> List[Dict[str, str]]:
+    """从技能返回值里提取「可下载文件」，转成前端能直接用的 {name, url} 列表。
+
+    技能统一返回 {"type": ..., "content": ..., "meta": {...}}（见 skills/base.py:13），
+    其中只有「产出文件」的技能会在 meta 里放 `path`（绝对路径），例如
+    excel_report.py:99 和 diagram_annotate.py:833。文本类技能（翻译、检索、SOP）
+    没有 path，这里就返回空列表。
+
+    【为什么要在这里做一层转换，不把 meta 原样丢给前端】
+      1. meta.path 是 `E:\\AI LCP\\...` 这样的服务器绝对路径，发到浏览器属于信息泄露
+      2. 拼 URL、做百分号编码这些事只该有一个实现，放后端最省事
+      3. 前端拿到的是成品 {name, url}，不需要知道 generated 目录在哪
+    """
+    # `or {}` 兜底：技能可能没写 meta 键，直接 .get 会拿到 None 而不是字典
+    meta = result.get("meta") or {}
+    abs_path = meta.get("path")
+    if not abs_path:
+        return []
+
+    url = generated_url(cfg, str(abs_path))
+    # url 为 None 说明这个文件不在 generated 目录下（越界或已删除），就当没有
+    if not url:
+        return []
+
+    # Path(...).name 只取最后一段文件名，去掉所有目录 —— 用作下载链接的显示文字
+    return [{"name": Path(str(abs_path)).name, "url": url}]
+
 
 
 class Agent:
@@ -172,8 +202,13 @@ class Agent:
                 except Exception as e:  # noqa: BLE001
                     result = {"type": "text", "content": f"[技能执行错误] {e}"}
                 preview = result.get("content", "")
+                # tool_end 是「技能执行完毕」事件，前端 app.js:120 收到它才渲染那一行。
+                # 旧版只带 summary（纯文字），前端拿不到文件位置，所以生成的文件
+                # 在界面上「看得见摸不着」—— 只能自己去 generated/ 目录里翻。
+                # 这里补一个 files 字段：有产物时是非空数组，纯文本技能时是空数组。
                 yield {"type": "tool_end", "skill": skill_name, "title": skill.title,
-                       "summary": preview[:400]}
+                       "summary": preview[:400], "files": _result_files(self.cfg, result)}
+
                 messages.append({"role": "user", "content": f"[技能「{skill_name}」执行结果]\n{preview}"})
                 self._push(key, "assistant", f"（已调用技能：{skill_name}）")
                 continue
