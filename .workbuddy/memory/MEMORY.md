@@ -31,10 +31,23 @@
 - 前端：原生 HTML+CSS+JS，无框架无打包；自带 markdown.js
 - 模型：Ollama(本地) / OpenAI 兼容 / Mock 三通道，auto 模式自动降级
 - 目录：backend/app/{core,agent,rag,skills,api} · frontend · data · generated · docs
+- 新增 `backend/app/core/files.py`（2026-10-21）：**全项目唯一**允许把外部字符串
+  翻译成磁盘路径的地方，提供 `generated_root` / `resolve_generated_rel` /
+  `generated_url`。api 层与 agent 层共用，避免 agent 反向依赖 api。
+
+### 本机运行环境事实（2026-10-21 实测，会反复挡路）
+- **本机所有 Python 都没装 fastapi**：`D:\Python313`、`Python315`、
+  WorkBuddy 托管 3.13 全部 ModuleNotFoundError；项目无 `.venv`。
+  即**项目从未在本机跑起来过**，`generated/` 内产物系别处环境生成。
+- pip 已配清华源，但 pypi.org / 清华 / 阿里云 / 腾讯云镜像 **curl 全部超时**；
+  环境变量代理为 `http://127.0.0.1:59034`。装依赖需换网络或改代理。
+- 因此涉及"跑起来看效果"的验证目前只能做到单元级（纯函数 + 语法检查），
+  HTTP 层与浏览器层待补。
 
 ## 已确认的工程缺口（教学时可作为案例）
-1. /api/files/{filename} 不支持子路径 → generated/diagram_mark 产物无法下载；
-   前端 app.js tool_end 未渲染 meta.path，file 类技能结果等于"看得见摸不着"。
+1. ~~/api/files 不支持子路径 + 前端不渲染 meta.path~~ —— 已于 2026-10-21 修复
+   （`f359a4c`）：新增 `core/files.py` 统一路径解析与越界校验，
+   路由改 `{file_path:path}`，tool_end 增 `files` 字段，前端用 DOM API 渲染链接。
 2. ~~requirements.txt 缺 rapidocr_onnxruntime~~ —— 已于 2026-10-20 修复（`df52b41`），
    以可选依赖形式加入，b/c 见上方版本控制约定。
 3. diagram_annotate.DEFAULT_SCHEDULE 硬编码桌面绝对路径。
